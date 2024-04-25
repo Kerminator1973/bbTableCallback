@@ -31,6 +31,28 @@ dotnet new install Blazor.Bootstrap.Templates::1.10.0
 }
 ```
 
+Также была заменена default-ная реализация методов OnGridSettingsChanged() и GridSettingsProvider():
+
+```csharp
+@code {
+    private async Task OnGridSettingsChanged(GridSettings settings)
+    {
+        Settings = settings;
+    }
+
+    private async Task<GridSettings> GridSettingsProvider()
+    {
+        return Settings;
+    }
+}
+```
+
+Это позволяет не сохранять данные в локальное хранилище и исключить внедрения зависимости:
+
+```csharp
+[Inject] public IJSRuntime JS { get; set; }
+```
+
 ## Подробное описание проблемы
 
 В Grid существует событие **GridSettingsChanged**, параметром которого является объект **GridSettings**. В этом событии есть [ряд полезных полей](https://docs.blazorbootstrap.com/components/grid#gridsettings-properties), включая фильтры но нет ссылки на данные текущей выборки.
