@@ -38,6 +38,8 @@ The implementation of the OnGridSettingsChanged() and GridSettingsProvider() met
 
 ```csharp
 @code {
+    public GridSettings Settings { get; set; }
+
     private async Task OnGridSettingsChanged(GridSettings settings)
     {
         Settings = settings;
@@ -55,6 +57,8 @@ This made it possible to not store data on local storage and eliminate dependenc
 ```csharp
 [Inject] public IJSRuntime JS { get; set; }
 ```
+
+The main idea is to keep a reference to GridSettings in the **Settings** class member. When a user presses a certain button, for instance - "Export to Excel", we can use the Settings to access the last selected data.
 
 ## Detailed description of the problem
 
