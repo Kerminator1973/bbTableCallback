@@ -1,8 +1,12 @@
 # "Saving the grid's sort state as part of GridSetting" feature
 
+The **sorting state of the grid** is the representation of the data after the filtering and sorting rules have been accepted.
+
+We need to save the sort state of the grid in several cases, such as when we want to keep user input filters persistent. Another case - we want access to the filtered data in order to export it.
+
 The feature "Saving the grid's sorting state as part of GridSetting" related to [Blazor Bootstrap](https://docs.blazorbootstrap.com/getting-started/blazor-webassembly-net-8). It hasn't been developed yet at the end of April, 2024.
 
-It is expected that this feature will allow using data selected in the Grid, to export them to other applications (i.e. clipboard or Microsoft Excel).
+It is expected that this feature will allow the use of data that is filtered and displayed in the grid component for export to other applications (i.e. clipboard or Microsoft Excel).
 
 This repository contains a minimal functionality application to illustrate the expected implementation of the **GridSettingsChanged** event. The event is called when Grid's sorting state is changed.
 
