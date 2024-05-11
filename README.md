@@ -77,3 +77,26 @@ In accordance with the requirements for the application we are developing, it is
 Regarding the long-term support of the solution, I would like to exclude any "crutches".
 
 The official product documentation contains the following information: "_IMPORTANT! Saving the Grid's sorting state as part of GridSettings is not yet supported. This functionality will be included in future releases_".
+
+## How to debug the Blazor.Bootstrap source code
+
+Download the source files from the GitHub repository at [vikramlearning/blazorbootstrap](https://github.com/vikramlearning/blazorbootstrap)
+
+There are multiple projects in the solution. The target project is blazorbootstrap. Before building the library you should choose the target platform. It is .NET 6 by default. It's important to note, that the default platform for Blazor.Bootstrap.Templates::1.10.0 is .NET 7.
+
+You will have no problems building the library and successfully compiling it, you can find the library in the folder: \blazorbootstrap\bin\Debug\net6.0\BlazorBootstrap.dll
+
+The next step is to add the library to your application project as follows:
+
+- Select your application project in the Solution Tree
+- In the context menu select "Add -> Project Reference..."
+- In the modal dialog find the "Browse..." button
+- Locate the "BlazorBootstrap.dll" library on your local disk
+
+It's not enough to add the library as a dependency. You have to copy files from the "wwwroot" folder of the Blazor.Bootstrap to the corresponding folder of your project: "\[yourprojectname]\wwwroot\_content\Blazor.Bootstrap".
+
+Build your project. Now you can set breakpoints in your code and drill down to the BlazorBootstrap sources. At this point you can easily debug BlazorBootstrap with your application code.
+
+However, there are some glitches in the layout. In particular, the part of the layout related to screen resolution is broken. To get to the different application screens, you have to click on the "expand available pages" button, which should only be displayed at the minimum screen width (on a mobile device with portrait orientation).
+
+Unfortunately, changing the platform from .NET 6 to .NET 8 (including all dependencies on ASP.NET Core) doesn't solve the problem.
