@@ -100,3 +100,61 @@ Build your project. Now you can set breakpoints in your code and drill down to t
 However, there are some glitches in the layout. In particular, the part of the layout related to screen resolution is broken. To get to the different application screens, you have to click on the "expand available pages" button, which should only be displayed at the minimum screen width (on a mobile device with portrait orientation).
 
 Unfortunately, changing the platform from .NET 6 to .NET 8 (including all dependencies on ASP.NET Core) doesn't solve the problem.
+
+## Common ideas about how to get the current data when OnGridSettingsChanged is called
+
+As was written earlier, our goal is to get filtered and sorted data to export it. Let's assume that we can get a reference to the data in the handler of the OnGridSettingsChanged event:
+
+```csharp
+private async Task OnGridSettingsChanged(GridSettings settings)
+{
+	Settings = settings;
+}
+```
+
+It was really convenient if the GridSettings structure had an extra parameter called Items that was a reference to data.
+
+We know that the Grid class has a list of filtered data:
+
+```csharp
+private List<TItem>? items = null;
+```
+
+However, the order of refreshing the data and firing the OnGridSettingsChanged event should be reversed:
+
+```csharp
+internal async Task FilterChangedAsync()
+{
+	//...
+	await RefreshDataAsync(false, token);
+	await SaveGridSettingsAsync();
+}
+```
+
+The next step is to add the reference to Grid.items to GridSettings. For example:
+
+```csharp
+private Task SaveGridSettingsAsync()
+{
+	if (!GridSettingsChanged.HasDelegate)
+		return Task.CompletedTask;
+
+	var settings = new GridSettings { PageNumber = AllowPaging ? 
+		gridCurrentState.PageIndex : 0, PageSize = AllowPaging ? pageSize : 0, 
+		Filters = AllowFiltering ? GetFilters() : null, 
+		Items = this.items };   // <-- This line is added
+
+	return GridSettingsChanged.InvokeAsync(settings);
+}
+```
+
+Here we got the first serious challenge: the GridSettings is POCO, but the items is specialized by TItem container. So you can't add a reference to `List<TItem>` to the POCO class. So we have to change the GridSettings to a template class. There is a really bad thing there - it will ruin compatibility with already existing applications, so we have to avoid such decisions.
+
+We have another slippery way: to add an extra parameter to the GridSettingsChanged event (Items). It could be set to null by default. Unfortunately, this can't be done without a critical change to the API, because GridSettingsChanged is a delegate with the specialization:
+
+```csharp
+[Parameter]
+public EventCallback<GridSettings> GridSettingsChanged { get; set; }
+```
+
+So we don't have a good choice because anything will break the current API.
