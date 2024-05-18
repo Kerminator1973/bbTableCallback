@@ -95,11 +95,13 @@ The next step is to add the library to your application project as follows:
 
 It's not enough to add the library as a dependency. You have to copy files from the "wwwroot" folder of the Blazor.Bootstrap to the corresponding folder of your project: "\[yourprojectname]\wwwroot\_content\Blazor.Bootstrap".
 
+In addition, you should copy another file named "Blazor.Bootstrap.styles.css" into your project. You can get it from the [Nuget.org](https://nuget.info/packages/Blazor.Bootstrap/2.2.0) site by switching to "Package Explorer" mode. You can also publish the BlazorBootstrap project and find this style sheet in the "wwwroot" folder. Copy it to "_content/Blazor.Bootstrap" and include the link to the file in "index.html":
+
+```html
+<link href="_content/Blazor.Bootstrap/Blazor.Bootstrap.styles.css" rel="stylesheet" />
+```
+
 Build your project. Now you can set breakpoints in your code and drill down to the BlazorBootstrap sources. At this point you can easily debug BlazorBootstrap with your application code.
-
-However, there are some glitches in the layout. In particular, the part of the layout related to screen resolution is broken. To get to the different application screens, you have to click on the "expand available pages" button, which should only be displayed at the minimum screen width (on a mobile device with portrait orientation).
-
-Unfortunately, changing the platform from .NET 6 to .NET 8 (including all dependencies on ASP.NET Core) doesn't solve the problem.
 
 ## Common ideas about how to get the current data when OnGridSettingsChanged is called
 
